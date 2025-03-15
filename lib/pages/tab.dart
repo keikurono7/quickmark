@@ -2,33 +2,53 @@ import 'package:flutter/material.dart';
 import 'camera.dart';
 import 'attendance.dart';
 
-
-class Tabs extends StatelessWidget {
+class Tabs extends StatefulWidget {
   final dynamic title;
 
   const Tabs({super.key, required this.title});
 
   @override
+  _TabsState createState() => _TabsState();
+}
+
+class _TabsState extends State<Tabs> {
+  int _selectedIndex = 0;
+  late List<Widget> _screens;
+
+  @override
+  void initState() {
+    super.initState();
+    _screens = [
+      CameraScreen(title: widget.title),
+      const AttendanceScreen(),
+    ];
+  }
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: DefaultTabController(
-        length: 2,
-        child: Scaffold(
-          appBar: AppBar(
-            bottom: const TabBar(
-              tabs: [
-                Tab(icon: Icon(Icons.camera_alt), text: "Camera",),
-                Tab(icon: Icon(Icons.list), text: "Attendance",),
-              ],
-            ),
+    return Scaffold(
+      body: _screens[_selectedIndex],
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _selectedIndex,
+        onTap: _onItemTapped,
+        selectedItemColor: Colors.purple, // Active icon color
+        unselectedItemColor: Colors.grey, // Inactive icon color
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.camera_alt),
+            label: "Camera",
           ),
-          body: TabBarView(
-            children: [
-              CameraScreen(title: title,),
-              AttendanceScreen(),
-            ],
+          BottomNavigationBarItem(
+            icon: Icon(Icons.list),
+            label: "Attendance",
           ),
-        ),
+        ],
       ),
     );
   }
