@@ -4,7 +4,7 @@ import 'attendance.dart';
 
 
 class Tabs extends StatelessWidget {
-  const Tabs ({super.key});
+  const Tabs({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +19,6 @@ class Tabs extends StatelessWidget {
                 Tab(icon: Icon(Icons.list), text: "Attendance",),
               ],
             ),
-            title: const Text('Tabs Demo'),
           ),
           body: const TabBarView(
             children: [
