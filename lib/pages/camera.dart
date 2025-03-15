@@ -4,9 +4,7 @@ import 'package:camera/camera.dart';
 import 'package:google_ml_kit/google_ml_kit.dart';
 
 class CameraScreen extends StatefulWidget {
-  final String title;
-
-  const CameraScreen({super.key, required this.title});
+  const CameraScreen({super.key});
 
   @override
   _CameraScreenState createState() => _CameraScreenState();
@@ -92,7 +90,7 @@ class _CameraScreenState extends State<CameraScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text("Capture"),
         backgroundColor: Colors.purple,
       ),
       body: Stack(
