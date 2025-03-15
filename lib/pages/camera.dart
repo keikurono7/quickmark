@@ -6,7 +6,7 @@ import 'package:google_ml_kit/google_ml_kit.dart';
 class CameraScreen extends StatefulWidget {
   final String title;
 
-  const CameraScreen({Key? key, required this.title}) : super(key: key);
+  const CameraScreen({super.key, required this.title});
 
   @override
   _CameraScreenState createState() => _CameraScreenState();
