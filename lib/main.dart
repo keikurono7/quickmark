@@ -5,7 +5,10 @@ import 'package:myapp/pages/tab.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
+  await Hive.openBox('attendanceBox');
+  await Hive.openBox('timetableBox');
   await Hive.openBox('notesBox');
+
   runApp(const MyApp());
 }
 
