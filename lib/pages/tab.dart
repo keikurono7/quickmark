@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:myapp/pages/chat.dart';
 import 'camera.dart';
 import 'attendance.dart';
 import 'notes.dart';
@@ -20,7 +21,8 @@ class _TabsState extends State<Tabs> {
     _screens = [
       CameraScreen(),
       const AttendanceScreen(),
-       const NotesScreen(),
+      const NotesScreen(),
+      Chat()
     ];
   }
 
@@ -51,6 +53,10 @@ class _TabsState extends State<Tabs> {
           BottomNavigationBarItem(
             icon: Icon(Icons.note),
             label: "Notes", // New Tab
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.android),
+            label: "Chat", // New Tab
           ),
         ],
       ),
