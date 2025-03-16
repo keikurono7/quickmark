@@ -16,7 +16,6 @@ class _CameraScreenState extends State<CameraScreen> {
   bool _isCameraInitialized = false;
   String? _imagePath;
   int detectedStudents = 0;
-  bool _flashOn = false;
 
   @override
   void initState() {
