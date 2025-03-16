@@ -40,17 +40,6 @@ class _CameraScreenState extends State<CameraScreen> {
     }
   }
 
-  void _toggleFlash() async {
-    if (_cameraController != null) {
-      await _cameraController!.setFlashMode(
-        _flashOn ? FlashMode.off : FlashMode.torch,
-      );
-      setState(() {
-        _flashOn = !_flashOn;
-      });
-    }
-  }
-
   Future<void> _captureImage() async {
     if (!_isCameraInitialized || _cameraController == null) return;
     try {
@@ -145,15 +134,6 @@ class _CameraScreenState extends State<CameraScreen> {
               ),
               const SizedBox(height: 20),
             ],
-          ),
-          Positioned(
-            top: 50,
-            right: 20,
-            child: FloatingActionButton(
-              backgroundColor: Theme.of(context).colorScheme.primary,
-              onPressed: _toggleFlash,
-              child: Icon(_flashOn ? Icons.flash_on : Icons.flash_off),
-            ),
           ),
         ],
       ),
