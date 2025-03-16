@@ -92,7 +92,6 @@ class _CameraScreenState extends State<CameraScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text("Capture"),
-        backgroundColor: Colors.purple,
       ),
       body: Stack(
         children: [
@@ -120,10 +119,10 @@ class _CameraScreenState extends State<CameraScreen> {
                 children: [
                   ElevatedButton.icon(
                     onPressed: _captureImage,
-                    icon: const Icon(Icons.camera, size: 30),
-                    label: const Text("Capture"),
+                    icon: const Icon(Icons.camera, size: 30, color: Colors.white,),
+                    label: const Text("Capture", style: TextStyle(color: Colors.white,),),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.purple,
+                      backgroundColor: Theme.of(context).colorScheme.primary,
                       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                       textStyle: const TextStyle(fontSize: 18),
                     ),
@@ -151,7 +150,7 @@ class _CameraScreenState extends State<CameraScreen> {
             top: 50,
             right: 20,
             child: FloatingActionButton(
-              backgroundColor: Colors.purple,
+              backgroundColor: Theme.of(context).colorScheme.primary,
               onPressed: _toggleFlash,
               child: Icon(_flashOn ? Icons.flash_on : Icons.flash_off),
             ),

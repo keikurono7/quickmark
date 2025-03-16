@@ -42,8 +42,7 @@ class _ChatState extends State<Chat> {
 
   Future<void> _getGeminiResponse(String prompt) async {
     // Get the API key from environment variables
-    final apiKey = "";
-    print("Error: API key not found in environment variables.");
+    final apiKey = "AIzaSyAAOVMb74nOYOLzXzPstlylVzVg9gZZsrE";
 
     // Set the loading state
     setState(() {
@@ -51,11 +50,11 @@ class _ChatState extends State<Chat> {
     });
     try {
       // Initialize the Gemini model
-      final model = GenerativeModel(model: 'gemini-pro', apiKey: apiKey);
+      final model = GenerativeModel(model: 'gemini-2.0-flash-lite', apiKey: apiKey);
 
       // System instructions for the teacher persona
       String systemInstructions =
-          "You are a teacher helping students. Answer as concisely as possible and give good advice.";
+          "You are an AI assistant for an attendance management system. Your task is to answer only attendance-related queries based on student records, including names, classes attended, and absences. Answer questions like:  - What is [Student's Name]’s attendance percentage?  - How many classes has [Student's Name] attended?  - Who has low attendance?  - Has [Student's Name] been absent more than X times?  - Show me today's attendance record.  - List students with less than 75% attendance.  *Strictly refuse unrelated queries with: 'I only assist with attendance-related questions.'";
 
       // Concatenate previous messages into a single string for context, starting with system instructions
       List<Content> history = [];
@@ -99,7 +98,7 @@ class _ChatState extends State<Chat> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Ask About attendance directly'),
+        title: const Text('QuikAsk'),
         actions: [
           // Show a loading indicator when waiting for a response
           if (_isLoading) const CircularProgressIndicator(),
@@ -130,7 +129,7 @@ class _ChatState extends State<Chat> {
                   ),
                 ),
                 IconButton(
-                  icon: const Icon(Icons.send),
+                  icon: Icon(Icons.send, color: Theme.of(context).colorScheme.primary),
                   onPressed: _sendMessage,
                 ),
               ],

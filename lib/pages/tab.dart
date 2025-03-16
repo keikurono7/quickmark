@@ -39,7 +39,7 @@ class _TabsState extends State<Tabs> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
-        selectedItemColor: Colors.purple, // Active icon color
+        selectedItemColor: Theme.of(context).colorScheme.primary, // Active icon color
         unselectedItemColor: Colors.grey, // Inactive icon color
         items: const [
           BottomNavigationBarItem(
