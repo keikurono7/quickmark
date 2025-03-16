@@ -1,35 +1,30 @@
 import 'package:hive/hive.dart';
 
+class AttendanceDatabase {
+  final _attendanceBox = Hive.box('attendanceBox');
+  final _timetableBox = Hive.box('timetableBox');
 
+  // Mark attendance for a student
+  Future<void> markAttendance(String usn, String subject, String date) async {
+    final String key = '${usn}_${subject}_$date';
+    await _attendanceBox.put(key, true);
+  }
 
-@HiveType(typeId: 0)
-class AttendanceRecord {
-  @HiveField(0)
-  String usn;
+  // Check if student exists in timetable
+  bool isValidStudent(String usn, String subject) {
+    final timetable = _timetableBox.get(subject, defaultValue: []);
+    return timetable.contains(usn);
+  }
 
-  @HiveField(1)
-  String studentName;
+  // Get attendance for a student
+  Map<String, bool> getStudentAttendance(String usn, String subject) {
+    final List<String> keys = _attendanceBox.keys
+        .where((key) => key.toString().startsWith('${usn}_$subject'))
+        .cast<String>()
+        .toList();
 
-  @HiveField(2)
-  Map<String, List<DateTime>> subjects; // Subject: [List of attendance dates]
-
-  AttendanceRecord({
-    required this.usn,
-    required this.studentName,
-    required this.subjects,
-  });
-}
-
-@HiveType(typeId: 1)
-class Timetable {
-  @HiveField(0)
-  Map<String, Map<String, String>> schedule; // Day: {TimeSlot: Subject}
-
-  @HiveField(1)
-  Map<String, int> subjectClassCount; // Subject: Number of classes conducted
-
-  Timetable({
-    required this.schedule,
-    required this.subjectClassCount,
-  });
+    return Map.fromEntries(
+      keys.map((key) => MapEntry(key, _attendanceBox.get(key) ?? false)),
+    );
+  }
 }

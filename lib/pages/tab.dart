@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:myapp/pages/chat.dart';
 import 'camera.dart';
 import 'attendance.dart';
-import 'notes.dart';
 
 class Tabs extends StatefulWidget {
   const Tabs({super.key});
@@ -19,9 +18,8 @@ class _TabsState extends State<Tabs> {
   void initState() {
     super.initState();
     _screens = [
-      CameraScreen(),
+      CameraPage(),
       const AttendanceScreen(),
-      const NotesScreen(),
       Chat()
     ];
   }
@@ -49,10 +47,6 @@ class _TabsState extends State<Tabs> {
           BottomNavigationBarItem(
             icon: Icon(Icons.list),
             label: "Attendance",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.note),
-            label: "Notes", // New Tab
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.android),
