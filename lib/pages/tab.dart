@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:myapp/pages/chat.dart';
 import 'camera.dart';
 import 'attendance.dart';
 import 'notes.dart';
 
 class Tabs extends StatefulWidget {
-  final dynamic title;
-
-  const Tabs({super.key, required this.title});
+  const Tabs({super.key});
 
   @override
   _TabsState createState() => _TabsState();
@@ -20,9 +19,10 @@ class _TabsState extends State<Tabs> {
   void initState() {
     super.initState();
     _screens = [
-      CameraScreen(title: widget.title),
+      CameraScreen(),
       const AttendanceScreen(),
-       const NotesScreen(),
+      const NotesScreen(),
+      Chat()
     ];
   }
 
@@ -39,7 +39,7 @@ class _TabsState extends State<Tabs> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
-        selectedItemColor: Colors.purple, // Active icon color
+        selectedItemColor: Theme.of(context).colorScheme.primary, // Active icon color
         unselectedItemColor: Colors.grey, // Inactive icon color
         items: const [
           BottomNavigationBarItem(
@@ -53,6 +53,10 @@ class _TabsState extends State<Tabs> {
           BottomNavigationBarItem(
             icon: Icon(Icons.note),
             label: "Notes", // New Tab
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.android),
+            label: "Chat", // New Tab
           ),
         ],
       ),

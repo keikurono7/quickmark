@@ -5,9 +5,7 @@ import 'package:google_ml_kit/google_ml_kit.dart';
 import 'package:flutter/foundation.dart';
 
 class CameraScreen extends StatefulWidget {
-  final String title;
-
-  const CameraScreen({Key? key, required this.title}) : super(key: key);
+  const CameraScreen({super.key});
 
   @override
   _CameraScreenState createState() => _CameraScreenState();
@@ -39,17 +37,6 @@ class _CameraScreenState extends State<CameraScreen> {
       });
     } catch (e) {
       print("Camera initialization error: $e");
-    }
-  }
-
-  void _toggleFlash() async {
-    if (_cameraController != null) {
-      await _cameraController!.setFlashMode(
-        _flashOn ? FlashMode.off : FlashMode.torch,
-      );
-      setState(() {
-        _flashOn = !_flashOn;
-      });
     }
   }
 
@@ -93,8 +80,7 @@ class _CameraScreenState extends State<CameraScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
-        backgroundColor: Colors.purple,
+        title: Text("Capture"),
       ),
       body: Stack(
         children: [
@@ -122,10 +108,10 @@ class _CameraScreenState extends State<CameraScreen> {
                 children: [
                   ElevatedButton.icon(
                     onPressed: _captureImage,
-                    icon: const Icon(Icons.camera, size: 30),
-                    label: const Text("Capture"),
+                    icon: const Icon(Icons.camera, size: 30, color: Colors.white,),
+                    label: const Text("Capture", style: TextStyle(color: Colors.white,),),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.purple,
+                      backgroundColor: Theme.of(context).colorScheme.primary,
                       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                       textStyle: const TextStyle(fontSize: 18),
                     ),
@@ -148,15 +134,6 @@ class _CameraScreenState extends State<CameraScreen> {
               ),
               const SizedBox(height: 20),
             ],
-          ),
-          Positioned(
-            top: 50,
-            right: 20,
-            child: FloatingActionButton(
-              backgroundColor: Colors.purple,
-              onPressed: _toggleFlash,
-              child: Icon(_flashOn ? Icons.flash_on : Icons.flash_off),
-            ),
           ),
         ],
       ),
