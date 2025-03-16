@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'camera.dart';
 import 'attendance.dart';
+import 'notes.dart';
 
 class Tabs extends StatefulWidget {
-  final dynamic title;
-
-  const Tabs({super.key, required this.title});
+  const Tabs({super.key});
 
   @override
   _TabsState createState() => _TabsState();
@@ -19,8 +18,9 @@ class _TabsState extends State<Tabs> {
   void initState() {
     super.initState();
     _screens = [
-      CameraScreen(title: widget.title),
+      CameraScreen(),
       const AttendanceScreen(),
+       const NotesScreen(),
     ];
   }
 
@@ -47,6 +47,10 @@ class _TabsState extends State<Tabs> {
           BottomNavigationBarItem(
             icon: Icon(Icons.list),
             label: "Attendance",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.note),
+            label: "Notes", // New Tab
           ),
         ],
       ),
