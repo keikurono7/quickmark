@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:google_ml_kit/google_ml_kit.dart';
+import 'package:flutter/foundation.dart';
 
 class CameraScreen extends StatefulWidget {
   const CameraScreen({super.key});
@@ -128,12 +129,19 @@ class _CameraScreenState extends State<CameraScreen> {
                     ),
                   ),
                   if (_imagePath != null)
-                    Image.file(
-                      File(_imagePath!),
-                      width: 80,
-                      height: 80,
-                      fit: BoxFit.cover,
-                    ),
+                    kIsWeb
+                        ? Image.network(
+                            _imagePath!,
+                            width: 80,
+                            height: 80,
+                            fit: BoxFit.cover,
+                          )
+                        : Image.file(
+                            File(_imagePath!),
+                            width: 80,
+                            height: 80,
+                            fit: BoxFit.cover,
+                          ),
                 ],
               ),
               const SizedBox(height: 20),
