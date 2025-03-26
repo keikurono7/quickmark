@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:flutter/material.dart';
+import 'package:myapp/pages/data.dart'; // Add this import for AttendanceDatabase
 
 class Chat extends StatefulWidget {
   const Chat({super.key});
@@ -18,45 +19,33 @@ class _ChatState extends State<Chat> {
   bool _isFirstMessage = true;
   bool _isLoading = false;
 
-  Future<void> _onSendMessage() async {
-    String prompt = _textController.text.trim();
-    if (prompt.isEmpty) return;
-
-    setState(() {
-      _messages.add(ChatMessage(
-        text: prompt,
-        isUser: true,
-      ));
-      _isTyping = true;
-    });
-
-    _textController.clear();
-
-    try {
-      final database = AttendanceDatabase();
-      // Get attendance report
-      String attendanceReport = database.getAttendanceReport();
-      
-      final systemInstructions =
-          "You are an AI assistant for an attendance management system. Your task is to answer only attendance-related queries based on student records, including names, classes attended, and absences. Answer questions like:  - What is [Student's Name]'s attendance percentage?  - How many classes has [Student's Name] attended?  - Who has low attendance?  - Has [Student's Name] been absent more than X times?  - Show me today's attendance record.  - List students with less than 75% attendance.  *Strictly refuse unrelated queries with: 'I only assist with attendance-related questions.'  \n\nHere is the complete attendance data:\n$attendanceReport";
-
-      // Rest of your existing code...
-
   void _sendMessage() {
     if (_textController.text.isNotEmpty) {
       String message = _textController.text;
 
       if (_isFirstMessage) {
+        // Get the attendance report for the first message
+        final database = AttendanceDatabase();
+        final attendanceReport = database.getAttendanceReport();
+        
         DateTime now = DateTime.now();
         String formattedDate = "${now.day}/${now.month}/${now.year}";
         message = "Today's date is $formattedDate. ${_textController.text}";
-        _isFirstMessage = false;
+        
+        setState(() {
+          _messages.add(ChatMessage(text: message, sender: "User", isUser: true));
+          _isFirstMessage = false;
+        });
+        
+        // Pass the attendance report with the first message
+        _getGeminiResponse(message, attendanceReport);
+      } else {
+        setState(() {
+          _messages.add(ChatMessage(text: message, sender: "User", isUser: true));
+        });
+        _getGeminiResponse(message, null);
       }
-
-      setState(() {
-        _messages.add(ChatMessage(text: message, sender: "User", isUser: true));
-      });
-      _getGeminiResponse(message);
+      
       _textController.clear();
     }
     Timer(const Duration(milliseconds: 300), () {
@@ -64,7 +53,7 @@ class _ChatState extends State<Chat> {
     });
   }
 
-  Future<void> _getGeminiResponse(String prompt) async {
+  Future<void> _getGeminiResponse(String prompt, String? attendanceReport) async {
     // Get the API key from environment variables
     final apiKey = "AIzaSyAAOVMb74nOYOLzXzPstlylVzVg9gZZsrE";
 
@@ -78,7 +67,12 @@ class _ChatState extends State<Chat> {
 
       // System instructions for the teacher persona
       String systemInstructions =
-          "You are an AI assistant for an attendance management system. Your task is to answer only attendance-related queries based on student records, including names, classes attended, and absences. Answer questions like:  - What is [Student's Name]’s attendance percentage?  - How many classes has [Student's Name] attended?  - Who has low attendance?  - Has [Student's Name] been absent more than X times?  - Show me today's attendance record.  - List students with less than 75% attendance.  *Strictly refuse unrelated queries with: 'I only assist with attendance-related questions.'";
+          "You are an AI assistant for an attendance management system. Your task is to answer only attendance-related queries based on student records, including names, classes attended, and absences. Answer questions like:  - What is [Student's Name]'s attendance percentage?  - How many classes has [Student's Name] attended?  - Who has low attendance?  - Has [Student's Name] been absent more than X times?  - Show me today's attendance record.  - List students with less than 75% attendance.  *Strictly refuse unrelated queries with: 'I only assist with attendance-related questions.'";
+
+      // Add attendance report to the system instructions if this is the first message
+      if (attendanceReport != null) {
+        systemInstructions += "\n\nHere is the complete attendance data:\n$attendanceReport";
+      }
 
       // Concatenate previous messages into a single string for context, starting with system instructions
       List<Content> history = [];
@@ -108,8 +102,13 @@ class _ChatState extends State<Chat> {
         });
       }
     } catch (e) {
-        print('Error getting response from Gemini: $e');
-      
+      print('Error getting response from Gemini: $e');
+      setState(() {
+        _messages.add(ChatMessage(
+            text: "Sorry, I encountered an error processing your request. Please try again.",
+            sender: "Gemini",
+            isUser: false));
+      });
     } finally {
       // Reset the loading state
       setState(() {
