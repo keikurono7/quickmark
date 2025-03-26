@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:myapp/pages/tab.dart';
+import 'package:myapp/pages/data.dart';
 import 'dart:io';
 
 void main() async {
@@ -9,6 +10,11 @@ void main() async {
   await Hive.openBox('attendanceBox');
   await Hive.openBox('timetableBox');
   await Hive.openBox('notesBox');
+  await Hive.openBox('studentsBox');
+  
+  // Initialize sample data
+  final database = AttendanceDatabase();
+  await database.initializeSampleData();
 
   runApp(const MyApp());
 }

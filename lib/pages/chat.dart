@@ -18,6 +18,30 @@ class _ChatState extends State<Chat> {
   bool _isFirstMessage = true;
   bool _isLoading = false;
 
+  Future<void> _onSendMessage() async {
+    String prompt = _textController.text.trim();
+    if (prompt.isEmpty) return;
+
+    setState(() {
+      _messages.add(ChatMessage(
+        text: prompt,
+        isUser: true,
+      ));
+      _isTyping = true;
+    });
+
+    _textController.clear();
+
+    try {
+      final database = AttendanceDatabase();
+      // Get attendance report
+      String attendanceReport = database.getAttendanceReport();
+      
+      final systemInstructions =
+          "You are an AI assistant for an attendance management system. Your task is to answer only attendance-related queries based on student records, including names, classes attended, and absences. Answer questions like:  - What is [Student's Name]'s attendance percentage?  - How many classes has [Student's Name] attended?  - Who has low attendance?  - Has [Student's Name] been absent more than X times?  - Show me today's attendance record.  - List students with less than 75% attendance.  *Strictly refuse unrelated queries with: 'I only assist with attendance-related questions.'  \n\nHere is the complete attendance data:\n$attendanceReport";
+
+      // Rest of your existing code...
+
   void _sendMessage() {
     if (_textController.text.isNotEmpty) {
       String message = _textController.text;
