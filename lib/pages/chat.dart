@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:flutter/material.dart';
-import 'package:myapp/pages/data.dart'; // Add this import for AttendanceDatabase
+import 'package:myapp/pages/data.dart'; // Import for AttendanceDatabase
 
 class Chat extends StatefulWidget {
   const Chat({super.key});
@@ -28,22 +28,27 @@ class _ChatState extends State<Chat> {
         final database = AttendanceDatabase();
         final attendanceReport = database.getAttendanceReport();
         
-        DateTime now = DateTime.now();
-        String formattedDate = "${now.day}/${now.month}/${now.year}";
-        message = "Today's date is $formattedDate. ${_textController.text}";
-        
+        // Set first message with original text (no date)
         setState(() {
-          _messages.add(ChatMessage(text: message, sender: "User", isUser: true));
+          _messages.add(ChatMessage(
+            text: message, 
+            sender: "User", 
+            isUser: true
+          ));
           _isFirstMessage = false;
         });
         
         // Pass the attendance report with the first message
-        _getGeminiResponse(message, attendanceReport);
+        _getGeminiResponse(message, attendanceReport, true);
       } else {
         setState(() {
-          _messages.add(ChatMessage(text: message, sender: "User", isUser: true));
+          _messages.add(ChatMessage(
+            text: message, 
+            sender: "User", 
+            isUser: true
+          ));
         });
-        _getGeminiResponse(message, null);
+        _getGeminiResponse(message, null, false);
       }
       
       _textController.clear();
@@ -53,8 +58,8 @@ class _ChatState extends State<Chat> {
     });
   }
 
-  Future<void> _getGeminiResponse(String prompt, String? attendanceReport) async {
-    // Get the API key from environment variables
+  Future<void> _getGeminiResponse(String prompt, String? attendanceReport, bool isFirstMessage) async {
+    // Get the API key
     final apiKey = "AIzaSyAAOVMb74nOYOLzXzPstlylVzVg9gZZsrE";
 
     // Set the loading state
@@ -66,15 +71,19 @@ class _ChatState extends State<Chat> {
       final model = GenerativeModel(model: 'gemini-2.0-flash-lite', apiKey: apiKey);
 
       // System instructions for the teacher persona
-      String systemInstructions =
-          "You are an AI assistant for an attendance management system. Your task is to answer only attendance-related queries based on student records, including names, classes attended, and absences. Answer questions like:  - What is [Student's Name]'s attendance percentage?  - How many classes has [Student's Name] attended?  - Who has low attendance?  - Has [Student's Name] been absent more than X times?  - Show me today's attendance record.  - List students with less than 75% attendance.  *Strictly refuse unrelated queries with: 'I only assist with attendance-related questions.'";
+      String systemInstructions = "You are an AI assistant for an attendance management system. Your task is to answer only attendance-related queries based on student records, including names, classes attended, and absences. Answer questions like:  - What is [Student's Name]'s attendance percentage?  - How many classes has [Student's Name] attended?  - Who has low attendance?  - Has [Student's Name] been absent more than X times?  - Show me today's attendance record.  - List students with less than 75% attendance.  *Strictly refuse unrelated queries with: 'I only assist with attendance-related questions.'";
 
-      // Add attendance report to the system instructions if this is the first message
+      // Add attendance report to system instructions
       if (attendanceReport != null) {
         systemInstructions += "\n\nHere is the complete attendance data:\n$attendanceReport";
       }
 
-      // Concatenate previous messages into a single string for context, starting with system instructions
+      // For first message, specifically ask the model to display the attendance report
+      if (isFirstMessage) {
+        prompt = "Please show me the complete attendance report with all students and their attendance percentages, then answer my question: " + prompt;
+      }
+
+      // Concatenate previous messages into a single string for context
       List<Content> history = [];
       history.add(Content.text(systemInstructions));
       for (ChatMessage message in _messages) {
